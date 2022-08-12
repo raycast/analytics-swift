@@ -125,7 +125,10 @@ public class SegmentDestination: DestinationPlugin {
                         case .success(_):
                             storage.remove(file: url)
                             self.cleanupUploads()
-                        default:
+                        case .failure(let error):
+                            if (error as? URLError)?.code == URLError.networkConnectionLost {
+                              storage.remove(file: url)
+                            }
                             analytics.logFlush()
                     }
                     
